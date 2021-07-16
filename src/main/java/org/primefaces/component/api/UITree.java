@@ -97,8 +97,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             if (nodeVar != null) {
                 requestMap.remove(nodeVar);
             }
-        }
-        else {
+        } else {
             TreeNode root = getValue();
             rowNode = findTreeNode(root, rowKey);
 
@@ -108,8 +107,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                 if (nodeVar != null) {
                     requestMap.put(nodeVar, rowNode);
                 }
-            }
-            else {
+            } else {
                 requestMap.remove(getVar());
 
                 if (nodeVar != null) {
@@ -249,8 +247,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
 
         if (paths.length == 1) {
             return searchRoot;
-        }
-        else {
+        } else {
             String relativeRowKey = rowKey.substring(rowKey.indexOf(SEPARATOR) + 1);
 
             return findTreeNode(searchRoot, relativeRowKey);
@@ -309,15 +306,13 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                         if (!preselection.isEmpty()) {
                             ve.setValue(FacesContext.getCurrentInstance().getELContext(), preselection.get(0));
                         }
-                    }
-                    else {
+                    } else {
                         ve.setValue(FacesContext.getCurrentInstance().getELContext(), preselection.toArray(new TreeNode[0]));
                     }
 
                     preselection = null;
                 }
-            }
-            else {
+            } else {
                 ve.setValue(FacesContext.getCurrentInstance().getELContext(), null);
             }
         }
@@ -353,8 +348,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             if (selectionMode.equals("single")) {
                 TreeNode node = (TreeNode) selection;
                 value = node.getRowKey();
-            }
-            else {
+            } else {
                 TreeNode[] nodes = (TreeNode[]) selection;
                 StringBuilder builder = SharedStringBuilder.get(SB_GET_SELECTED_ROW_KEYS_AS_STRING);
 
@@ -379,8 +373,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
 
         if (_rowKey == null) {
             return clientId;
-        }
-        else {
+        } else {
             StringBuilder builder = SharedStringBuilder.get(context, SB_GET_CONTAINER_CLIENT_ID);
 
             return builder.append(clientId).append(UINamingContainer.getSeparatorChar(context)).append(rowKey).toString();
@@ -416,8 +409,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             }
             source.pushComponentToEL(context, null);
             source.broadcast(originalEvent);
-        }
-        finally {
+        } finally {
             source.popComponentFromEL(context);
             if (compositeParent != null) {
                 compositeParent.popComponentFromEL(context);
@@ -445,8 +437,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
 
         try {
             decode(context);
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             context.renderResponse();
             throw e;
         }
@@ -480,8 +471,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                 if (selection == null) {
                     valid = false;
                 }
-            }
-            else {
+            } else {
                 TreeNode[] selectionArray = (TreeNode[]) selection;
                 if (selectionArray.length == 0) {
                     valid = false;
@@ -494,8 +484,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
 
                 if (requiredMessage != null) {
                     msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, requiredMessage, requiredMessage);
-                }
-                else {
+                } else {
                     msg = MessageFactory.getMessage(REQUIRED_MESSAGE_ID, FacesMessage.SEVERITY_ERROR, new Object[]{getClientId(context)});
                 }
 
@@ -523,6 +512,14 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
         popComponentFromEL(context);
     }
 
+    public TreeNode[] getMultiSelection() {
+        String selectionMode = getSelectionMode();
+        if ("multiple".equals(selectionMode)) {
+            return (TreeNode[]) getLocalSelectedNodes();
+        }
+        return null;
+    }
+
     public void updateSelection(FacesContext context) {
         String selectionMode = getSelectionMode();
         boolean propagateSelectionDown = isPropagateSelectionDown();
@@ -541,8 +538,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                 if (selection != null) {
                     ((TreeNode) selection).setSelected(true);
                 }
-            }
-            else {
+            } else {
                 TreeNode[] previousSelections = (TreeNode[]) previousSelection;
                 TreeNode[] selections = (TreeNode[]) selection;
 
@@ -550,8 +546,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                     for (TreeNode node : previousSelections) {
                         if (node instanceof CheckboxTreeNode) {
                             ((CheckboxTreeNode) node).setSelected(false, propagateSelectionDown, propagateSelectionUp);
-                        }
-                        else {
+                        } else {
                             node.setSelected(false);
                         }
                     }
@@ -561,8 +556,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                     for (TreeNode node : selections) {
                         if (node instanceof CheckboxTreeNode) {
                             ((CheckboxTreeNode) node).setSelected(true, propagateSelectionDown, propagateSelectionUp);
-                        }
-                        else {
+                        } else {
                             node.setSelected(true);
                         }
                     }
@@ -570,7 +564,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             }
 
             selectionVE.setValue(context.getELContext(), selection);
-            setSelection(null);
+//            setSelection(null);
         }
     }
 
@@ -596,7 +590,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
         //process child nodes if node is expanded or node itself is the root
         if (shouldVisitNode(treeNode)) {
             int childIndex = 0;
-            for (Iterator<TreeNode> iterator = treeNode.getChildren().iterator(); iterator.hasNext(); ) {
+            for (Iterator<TreeNode> iterator = treeNode.getChildren().iterator(); iterator.hasNext();) {
                 String childRowKey = rowKey == null ? String.valueOf(childIndex) : rowKey + SEPARATOR + childIndex;
 
                 processNode(context, phaseId, iterator.next(), childRowKey);
@@ -613,14 +607,11 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             for (UIComponent facet : getFacets().values()) {
                 if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
                     facet.processDecodes(context);
-                }
-                else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
+                } else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
                     facet.processValidators(context);
-                }
-                else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+                } else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
                     facet.processUpdates(context);
-                }
-                else {
+                } else {
                     throw new IllegalArgumentException();
                 }
             }
@@ -638,14 +629,11 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                     for (UIComponent columnFacet : column.getFacets().values()) {
                         if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
                             columnFacet.processDecodes(context);
-                        }
-                        else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
+                        } else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
                             columnFacet.processValidators(context);
-                        }
-                        else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+                        } else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
                             columnFacet.processUpdates(context);
-                        }
-                        else {
+                        } else {
                             throw new IllegalArgumentException();
                         }
                     }
@@ -669,8 +657,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                             processComponent(context, grandkid, phaseId);
                         }
                     }
-                }
-                else {
+                } else {
                     processComponent(context, child, phaseId);
                 }
             }
@@ -681,14 +668,11 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
     protected void processComponent(FacesContext context, UIComponent component, PhaseId phaseId) {
         if (phaseId == PhaseId.APPLY_REQUEST_VALUES) {
             component.processDecodes(context);
-        }
-        else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
+        } else if (phaseId == PhaseId.PROCESS_VALIDATIONS) {
             component.processValidators(context);
-        }
-        else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
+        } else if (phaseId == PhaseId.UPDATE_MODEL_VALUES) {
             component.processUpdates(context);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException();
         }
     }
@@ -824,8 +808,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                     return true;
                 }
             }
-        }
-        finally {
+        } finally {
             popComponentFromEL(facesContext);
 
             if (visitNodes) {
@@ -886,8 +869,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
                     }
 
                     uicolumns.setRowIndex(-1);
-                }
-                else if (child instanceof UIColumn) {
+                } else if (child instanceof UIColumn) {
                     if (child instanceof UITreeNode) {
                         UITreeNode uiTreeNode = (UITreeNode) child;
                         if (treeNodeType != null && !treeNodeType.equals(uiTreeNode.getType())) {
@@ -939,7 +921,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
         //visit child nodes if node is expanded or node itself is the root
         if (shouldVisitNode(treeNode)) {
             int childIndex = 0;
-            for (Iterator<TreeNode> iterator = treeNode.getChildren().iterator(); iterator.hasNext(); ) {
+            for (Iterator<TreeNode> iterator = treeNode.getChildren().iterator(); iterator.hasNext();) {
                 String childRowKey = rowKey == null ? String.valueOf(childIndex) : rowKey + SEPARATOR + childIndex;
 
                 if (visitNode(context, callback, iterator.next(), childRowKey)) {
@@ -970,8 +952,7 @@ public abstract class UITree extends UIComponentBase implements NamingContainer 
             //JSF 2.1
             VisitHint skipHint = VisitHint.valueOf("SKIP_ITERATION");
             return !visitContext.getHints().contains(skipHint);
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             //JSF 2.0
             Object skipHint = context.getAttributes().get("javax.faces.visit.SKIP_ITERATION");
             return !Boolean.TRUE.equals(skipHint);
